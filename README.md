@@ -12,7 +12,7 @@ The model presented in this repository is a type of **Recurrent Neural Network (
 1. **Multi-Layer Architecture:** True RNNs often have multiple layers, allowing them to capture more complex patterns and relationships in the data. Our model, however, is a single-layer model.
 2. **Recurrent Connections:** RNNs typically have recurrent connections between hidden states, allowing information to flow from previous time steps to subsequent ones. Our model, while using the concept of attention, doesn't explicitly have recurrent connections in the traditional sense.
 
-**RNNs with self-attention** and **Transformer architecture** are both designed to process sequential data, but they differ significantly in their approach.
+**RNNs with self-attention** vs **Transformer architecture** 
 
 * **RNNs with self-attention:** Process data sequentially, one element at a time. Self-attention allows the model to weigh the importance of different parts of the input sequence when processing a specific element. However, this sequential processing can limit the model's ability to capture long-range dependencies due to the vanishing gradient problem.
 
