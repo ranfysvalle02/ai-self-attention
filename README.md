@@ -14,6 +14,14 @@ By combining RNNs with self-attention, the model can effectively process sequent
 1. **Multi-Layer Architecture:** True RNNs often have multiple layers, allowing them to capture more complex patterns and relationships in the data. Our model, however, is a single-layer model.
 2. **Recurrent Connections:** RNNs typically have recurrent connections between hidden states, allowing information to flow from previous time steps to subsequent ones. Our model, while using the concept of attention, doesn't explicitly have recurrent connections in the traditional sense.
 
+**RNNs with self-attention** and **Transformer architecture** are both designed to process sequential data, but they differ significantly in their approach.
+
+* **RNNs with self-attention:** Process data sequentially, one element at a time. Self-attention allows the model to weigh the importance of different parts of the input sequence when processing a specific element. However, this sequential processing can limit the model's ability to capture long-range dependencies due to the vanishing gradient problem.
+
+* **Transformer architecture:** Process data in parallel, considering all elements of the input sequence simultaneously. This is achieved through a mechanism called self-attention, which allows the model to weigh the importance of different parts of the input sequence for each element. This parallel processing is more efficient and can capture long-range dependencies more effectively.
+
+In essence, while both architectures use self-attention, the Transformer's parallel processing approach gives it a significant advantage in handling long sequences and capturing complex relationships between elements.
+
 ![](https://www.mdpi.com/applsci/applsci-12-03846/article_deploy/html/images/applsci-12-03846-g006-550.jpg)
 
 _(Image Credit to article[ Attention Map-Guided Visual Explanations for Deep Neural Networks ](https://www.mdpi.com/2076-3417/12/8/3846) )_
