@@ -14,6 +14,13 @@ The model presented in this repository is a type of **Recurrent Neural Network (
 
 **RNNs with self-attention** vs **Transformer architecture** 
 
+| Feature | RNN with Self-Attention | Transformer |
+|---|---|---|
+| Processing | Sequential | Parallel |
+| Long-range dependencies | Limited | Effective |
+| Efficiency | Can be slow on long sequences | Efficient |
+| Applications | Text generation, time series analysis | Machine translation, text summarization, question answering |
+
 * **RNNs with self-attention:** Process data sequentially, one element at a time. Self-attention allows the model to weigh the importance of different parts of the input sequence when processing a specific element. However, this sequential processing can limit the model's ability to capture long-range dependencies due to the vanishing gradient problem.
 
 The vanishing gradient problem occurs during training of deep neural networks when gradients, used to update each node's weight, become extremely small. This makes the weight updates virtually negligible, essentially stopping further training. It's a significant challenge in deep learning.
