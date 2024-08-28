@@ -102,6 +102,7 @@ The model then uses these probabilities to weigh the influence of each word's em
 * **Weighted Sum:** [0.12 * "The" + 0.28 * "quick" + ...]
 * **Predicted Next Word:** "over" (based on the weighted sum)
 
+### Self-Attention and Word Embeddings
 
 * **Self-Attention**: This is the key concept used in the `calculate_self_attention` function. It allows the model to focus on relevant parts of the input sequence (the sentence) when predicting the next word.
 
