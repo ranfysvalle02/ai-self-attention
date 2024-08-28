@@ -1,33 +1,25 @@
-### **A Recurrent Neural Network (RNN) with Self-Attention**
+### **Basic Word Prediction with Self-Attention**
 
 ![](https://lilianweng.github.io/posts/2018-06-24-attention/sentence-example-attention.png)
 
-The model presented in this repository is a type of **Recurrent Neural Network (RNN)** with a **self-attention mechanism**. RNNs are particularly well-suited for sequential data like text, as they can capture dependencies between elements in the sequence. While our model demonstrates the basic concept of self-attention, it's a simplified version of an RNN. 
+The model presented in this repository is a type of **language model** that predicts the next word with a **self-attention mechanism**. 
 
-* **RNNs:** These networks process input sequences one element at a time, maintaining a hidden state that stores information about the sequence seen so far. This allows them to handle long-range dependencies in the data.
 * **Self-Attention:** The self-attention mechanism allows the model to focus on different parts of the input sequence based on their relevance to the current output. This is achieved by assigning weights to each input element, with larger weights indicating greater importance.
 
-**True RNNs vs. Our Simplified Model:**
+**How Does Self-Attention Work?**
 
-1. **Multi-Layer Architecture:** True RNNs often have multiple layers, allowing them to capture more complex patterns and relationships in the data. Our model, however, is a single-layer model.
-2. **Recurrent Connections:** RNNs typically have recurrent connections between hidden states, allowing information to flow from previous time steps to subsequent ones. Our model, while using the concept of attention, doesn't explicitly have recurrent connections in the traditional sense.
+1. **Embedding:** Each word in the input sequence is converted into a numerical representation called an embedding. 
+2. **Query, Key, and Value:** For each word, three vectors are calculated: a query, a key, and a value.
+3. **Attention Scores:** The dot product between the query of one word and the keys of all other words is calculated. This gives a score representing the similarity between the words.
+4. **Softmax:** The scores are normalized using the softmax function to obtain attention weights.
+5. **Context Vector:** The weighted sum of the value vectors, using the attention weights, creates a context vector. This context vector captures the relevant information from the entire sequence.
 
-**RNNs with self-attention** vs **Transformer architecture** 
+**The Code in Action**
 
-| Feature | RNN with Self-Attention | Transformer |
-|---|---|---|
-| Processing | Sequential | Parallel |
-| Long-range dependencies | Limited | Effective |
-| Efficiency | Can be slow on long sequences | Efficient |
-| Applications | Text generation, time series analysis | Machine translation, text summarization, question answering |
-
-* **RNNs with self-attention:** Process data sequentially, one element at a time. Self-attention allows the model to weigh the importance of different parts of the input sequence when processing a specific element. However, this sequential processing can limit the model's ability to capture long-range dependencies due to the vanishing gradient problem.
-
-The vanishing gradient problem occurs during training of deep neural networks when gradients, used to update each node's weight, become extremely small. This makes the weight updates virtually negligible, essentially stopping further training. It's a significant challenge in deep learning.
-
-* **Transformer architecture:** Process data in parallel, considering all elements of the input sequence simultaneously. This is achieved through a mechanism called self-attention, which allows the model to weigh the importance of different parts of the input sequence for each element. This parallel processing is more efficient and can capture long-range dependencies more effectively.
-
-In essence, while both architectures use self-attention, the Transformer's parallel processing approach gives it a significant advantage in handling long sequences and capturing complex relationships between elements.
+* **Word Embeddings:** The code initializes random word embeddings. In practice, pre-trained embeddings like Word2Vec or GloVe can be used for better performance.
+* **Context Window:** The code defines a context window, specifying the number of words to consider before the current word.
+* **Self-Attention:** The code calculates attention scores, applies softmax, and creates the context vector.
+* **Prediction:** The context vector is used to predict the next word, often using a simple linear layer or a more complex model.
 
 ![](https://www.mdpi.com/applsci/applsci-12-03846/article_deploy/html/images/applsci-12-03846-g006-550.jpg)
 
