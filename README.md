@@ -16,6 +16,15 @@ While our model demonstrates the basic concept of self-attention, it's a simplif
 
 True RNNs typically have a multi-layer architecture, recurrent connections, and often incorporate attention mechanisms to improve their performance.
 
+## A Recurrent Neural Network (RNN) with Self-Attention and Transformer-Inspired Techniques
+
+The model presented in this repository is a **Recurrent Neural Network (RNN)** augmented with a **self-attention mechanism**. This combination leverages the strengths of both RNNs and Transformers to create a powerful model for sequential data.
+
+### RNNs: Capturing Sequential Dependencies
+RNNs are designed to process input sequences one element at a time, maintaining a hidden state that stores information about the sequence seen so far. This allows them to capture long-range dependencies in the data, making them well-suited for tasks like language modeling and speech recognition.
+
+### Self-Attention: Focusing on Relevant Information
+The self-attention mechanism enables the model to focus on different parts of the input sequence based on their relevance to the current output. This is achieved by assigning weights to each input element, with larger weights indicating greater importance. By incorporating self-attention, the model can learn to attend to relevant information in the sequence, even if it is located far away from the current position.
 
 ![](https://www.mdpi.com/applsci/applsci-12-03846/article_deploy/html/images/applsci-12-03846-g006-550.jpg)
 
@@ -29,7 +38,7 @@ It all started with: ["Attention is all you need."](https://arxiv.org/abs/1706.0
 
 Imagine you're reading a long novel. You don't read every word with the same level of focus. Instead, you pay more attention to certain parts, like the plot twists or character developments. This is similar to how attention works in a language model.
 
-Attention is a mechanism that allows a transformer to focus on different parts of its input sequence based on their relevance to the current output. This is achieved by assigning weights to each input element, with larger weights indicating greater importance. These weights are calculated using a similarity metric, such as the dot product, between the query vector and each key vector in the input sequence.
+Attention is a mechanism that allows a language model to focus on different parts of its input sequence based on their relevance to the current output. This is achieved by assigning weights to each input element, with larger weights indicating greater importance. These weights are calculated using a similarity metric, such as the dot product, between the query vector and each key vector in the input sequence.
 
 ![self-attention](https://miro.medium.com/v2/resize:fit:716/1*piCQbDMPO1-Kw5ZiNAl-FA.png)
 
