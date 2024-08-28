@@ -27,10 +27,6 @@ _(Image Credit to article[ Attention Map-Guided Visual Explanations for Deep Neu
 
 # **We should pay more attention to attention**
 
-**The Illusion of "Intelligence"**
-
-The term "intelligence" is often used to describe the capabilities of mathematical models like LLMs. However, it's important to note that this "intelligence" is heavily dependent on the quality and diversity of the training data. The model's "intelligence" can be biased, limited, and even misleading. For instance, an LLM trained on mostly news articles might struggle to understand sarcasm or humor. 
-
 It all started with: ["Attention is all you need."](https://arxiv.org/abs/1706.03762)
 
 ![](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*bWhofmIsEaplOkav6FjqpA.png)
