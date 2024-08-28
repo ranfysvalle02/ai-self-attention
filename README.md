@@ -65,7 +65,43 @@ We will implement a basic language model that uses **self-attention** to predict
 
 The core functionality relies on the self-attention mechanism.
 
-Here's a breakdown:
+## A Deeper Dive into the Process with Examples
+
+### 1. Word Representations: A Visual Analogy
+
+Imagine you're trying to teach a computer about the English language. You start by assigning each word a unique numerical identifier. This is similar to how we create word representations. 
+
+* **Word:** "cat"
+* **Representation:** [0.2, 0.5, -0.3]
+
+These numbers, or embeddings, are randomly initialized. Over time, as the model learns from data, these embeddings will adjust to better represent the meaning and context of the words.
+
+### 2. Self-Attention: Focusing on the Right Words
+
+Imagine you're reading a sentence: "The quick brown fox jumps over the lazy dog." To understand the meaning, you focus on certain words more than others. Self-attention mimics this human intuition.
+
+* **Query:** "jumps" (the word we're trying to understand)
+* **Keys:** "The," "quick," "brown," "fox," "over," "the," "lazy," "dog" (all the words in the sentence)
+* **Values:** The embeddings of these words
+
+The model calculates a similarity score between the query and each key. This score represents how relevant each word is to understanding "jumps." For instance, "fox" and "jumps" might have a high similarity score.
+
+### 3. Attention Weights and Probabilities
+
+The similarity scores are converted into probabilities using the softmax function. This ensures that the probabilities sum to 1.
+
+* **Similarity Scores:** [0.2, 0.5, 0.1, 0.6, 0.3, 0.2, 0.4, 0.1]
+* **Probabilities:** [0.12, 0.28, 0.06, 0.32, 0.17, 0.12, 0.23, 0.06]
+
+These probabilities indicate the importance of each word in the context of understanding "jumps."
+
+### 4. Predicting the Next Word
+
+The model then uses these probabilities to weigh the influence of each word's embedding. The word with the highest combined weight is predicted as the next word.
+
+* **Weighted Sum:** [0.12 * "The" + 0.28 * "quick" + ...]
+* **Predicted Next Word:** "over" (based on the weighted sum)
+
 
 * **Self-Attention**: This is the key concept used in the `calculate_self_attention` function. It allows the model to focus on relevant parts of the input sequence (the sentence) when predicting the next word.
 
