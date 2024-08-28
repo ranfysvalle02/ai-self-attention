@@ -42,7 +42,7 @@ For instance, in translation, attention helps the model concentrate on words or 
 
 ## Introduction
 
-In this blog post, we will explore the concept of attention through a Python code snippet that uses the self-attention mechanism to predict the next word in a sentence.
+In this guide, we will explore the concept of attention through a Python code snippet that uses the self-attention mechanism to predict the next word in a sentence.
 
 We will implement a basic language model that uses **self-attention** to predict the next word in a sentence. 
 
@@ -127,8 +127,6 @@ As the model trains on more data, the embeddings are updated through backpropaga
 
 * **Local Minima**: Random initialization can sometimes lead the model to get stuck in local minima, preventing it from reaching the global optimum.
 * **Slower Convergence**: Random initialization can sometimes require more training epochs to converge to a good solution.
-
-The blog post you've created effectively explains attention mechanisms in LLMs and the role they play in predicting the next word. Here's a breakdown of the impact of random embeddings and how they could be improved:
 
 **Impact of Random Embeddings:**
 
