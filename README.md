@@ -7,8 +7,6 @@ The model presented in this repository is a **Recurrent Neural Network (RNN)** w
 * **RNNs:** These networks process input sequences one element at a time, maintaining a hidden state that stores information about the sequence seen so far. This allows them to handle long-range dependencies in the data.
 * **Self-Attention:** The self-attention mechanism allows the model to focus on different parts of the input sequence based on their relevance to the current output. This is achieved by assigning weights to each input element, with larger weights indicating greater importance.
 
-By combining RNNs with self-attention, the model can effectively process sequential data while capturing complex relationships between elements. This makes it suitable for tasks like language modeling, where understanding the context of a word is crucial for predicting the next word.
-
 **True RNNs vs. Our Simplified Model:**
 
 1. **Multi-Layer Architecture:** True RNNs often have multiple layers, allowing them to capture more complex patterns and relationships in the data. Our model, however, is a single-layer model.
