@@ -1,6 +1,6 @@
 ### **A Recurrent Neural Network (RNN) with Self-Attention**
 
-![](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*ux4vTZNcsxJy0KQBHdxJAw.png)
+![](https://miro.medium.com/v2/resize:fit:1000/format:webp/1*1U8H9EZiDqfylJU7Im23Ag.gif)
 
 The model presented in this repository is a **Recurrent Neural Network (RNN)** with a **self-attention mechanism**. RNNs are particularly well-suited for sequential data like text, as they can capture dependencies between elements in the sequence. While our model demonstrates the basic concept of self-attention, it's a simplified version of an RNN. 
 
