@@ -328,7 +328,7 @@ While we've discussed the basic concept of attention, it's important to note tha
 **NOTE:**
 In most transformer models, the word embeddings remain constant throughout the training process. It's the model weights that are updated during training to improve the model's ability to represent and understand the data.
 
-![Transformers in generative models.](https://storage.googleapis.com/gweb-research2023-media/images/TransformerMusic3-Transformer.width-800.png)
+![Transformers in generative models.](https://www.jeremyjordan.me/content/images/2023/05/multi-head-attention.png)
 
 _(Image Credit to [Transformers in music recommendation](https://research.google/blog/transformers-in-music-recommendation/) )_
 
