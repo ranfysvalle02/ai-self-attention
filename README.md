@@ -2,6 +2,9 @@
 
 ![](https://lilianweng.github.io/posts/2018-06-24-attention/sentence-example-attention.png)
 
+
+Imagine you're reading a long novel. You don't read every word with the same level of focus. Instead, you pay more attention to certain parts, like the plot twists or character developments. This is similar to how attention works in a language model.
+
 The model presented in this repository is a type of **language model** that predicts the next word with a **self-attention mechanism**. 
 
 * **Self-Attention:** The self-attention mechanism allows the model to focus on different parts of the input sequence based on their relevance to the current output. This is achieved by assigning weights to each input element, with larger weights indicating greater importance.
@@ -36,8 +39,6 @@ In the above image/example, there are 7 sequences in the sentence ‘the train l
 According to the self-attention scores depicted in the picture, the word ‘train’ pays more attention to the word ‘station’ rather than other words in consideration, such as ‘on’ or ‘the’. Alternatively, we can say the word ‘station’ pays more attention to the word ‘train’ rather than other words in consideration, such as ‘on’ or ‘the’.
 
 [Read more here: Self-Attention](https://medium.com/@ramendrakumar/self-attention-d8196b9e9143)
-
-Imagine you're reading a long novel. You don't read every word with the same level of focus. Instead, you pay more attention to certain parts, like the plot twists or character developments. This is similar to how attention works in a language model.
 
 Attention is a mechanism that allows a language model to focus on different parts of its input sequence based on their relevance to the current output. This is achieved by assigning weights to each input element, with larger weights indicating greater importance. These weights are calculated using a similarity metric, such as the dot product, between the query vector and each key vector in the input sequence.
 
