@@ -16,6 +16,8 @@ The model presented in this repository is a type of **Recurrent Neural Network (
 
 * **RNNs with self-attention:** Process data sequentially, one element at a time. Self-attention allows the model to weigh the importance of different parts of the input sequence when processing a specific element. However, this sequential processing can limit the model's ability to capture long-range dependencies due to the vanishing gradient problem.
 
+The vanishing gradient problem occurs during training of deep neural networks when gradients, used to update each node's weight, become extremely small. This makes the weight updates virtually negligible, essentially stopping further training. It's a significant challenge in deep learning.
+
 * **Transformer architecture:** Process data in parallel, considering all elements of the input sequence simultaneously. This is achieved through a mechanism called self-attention, which allows the model to weigh the importance of different parts of the input sequence for each element. This parallel processing is more efficient and can capture long-range dependencies more effectively.
 
 In essence, while both architectures use self-attention, the Transformer's parallel processing approach gives it a significant advantage in handling long sequences and capturing complex relationships between elements.
