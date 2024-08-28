@@ -172,11 +172,6 @@ def create_word_representations(sentences):
 
 As the model trains on more data, the embeddings are updated through backpropagation. The model learns to adjust the embeddings so that words with similar meanings have similar representations. For example, words like "cat" and "dog" might end up having similar embeddings because they are often used in similar contexts.
 
-**Limitations of Random Initialization:**
-
-* **Local Minima**: Random initialization can sometimes lead the model to get stuck in local minima, preventing it from reaching the global optimum.
-* **Slower Convergence**: Random initialization can sometimes require more training epochs to converge to a good solution.
-
 **Impact of Random Embeddings:**
 
 * **Initialization:** Random embeddings provide a starting point for the model to learn meaningful representations of words. Without them, the model wouldn't know where to begin and its outputs would likely be nonsensical.
@@ -186,11 +181,6 @@ As the model trains on more data, the embeddings are updated through backpropaga
 
 * **Arbitrary Starting Point:** Random embeddings are essentially random guesses about how words should be represented. They may not capture any inherent relationships between words initially.
 * **Slower Learning:** The model might take longer to converge on optimal word representations if the random starting points are far from the ideal ones.
-
-**How Embeddings Could be Improved:**
-
-* **Pre-trained Embeddings:** Instead of random initialization, the model could be loaded with pre-trained word embeddings generated from a large corpus of text. These pre-trained embeddings already capture some semantic relationships between words based on how they are used in real-world text. This can significantly improve the model's performance and learning speed.
-* **Context-Aware Initialization:** Techniques like word2vec or GloVe can be used to initialize word embeddings based on the surrounding context in which words appear. This provides a more informed starting point than completely random values.
 
 **Impact on Model Output:**
 
