@@ -162,18 +162,6 @@ def create_word_representations(sentences):
 
 **Randomly generated embeddings** serve as a starting point for the model to learn meaningful representations of words. They are essentially arbitrary numerical vectors assigned to each word.
 
-**Why use random embeddings?**
-
-1. **Initialization**: Randomly generated embeddings provide a non-zero initial state for the model. This allows the model to start learning and adjusting the embeddings based on the input data.
-2. **Breaking Symmetry**: Random initialization helps to avoid symmetry in the model's parameters, which can hinder learning.
-3. **Exploration**: Randomness can encourage the model to explore different parts of the solution space, potentially leading to better performance.
-
-**How do they evolve?**
-
-As the model trains on more data, the embeddings are updated through backpropagation. The model learns to adjust the embeddings so that words with similar meanings have similar representations. For example, words like "cat" and "dog" might end up having similar embeddings because they are often used in similar contexts.
-
-**Impact of Random Embeddings:**
-
 * **Initialization:** Random embeddings provide a starting point for the model to learn meaningful representations of words. Without them, the model wouldn't know where to begin and its outputs would likely be nonsensical.
 * **Exploration:** Randomness encourages the model to explore different directions in the solution space, potentially leading to better performance as it learns from the data.
 
@@ -258,11 +246,7 @@ Here's a breakdown of the code:
 
 2. `calculate_self_attention(query, key, value)`: This function calculates the self-attention weights and the output vector. The attention weights are calculated by taking the dot product of the query and key, scaling it, and applying the softmax function. The output vector is the weighted sum of the value vectors, where the weights are the attention weights.
 
-3. `predict_next_word_with_self_attention(current_word, words, word_embeddings, word_to_index, index_to_word)`: This function predicts the next word given the current word and a list of words (context). It first retrieves the embeddings of the current word and the context words, then calculates the self-attention weights and output vector. The predicted next word is the word whose embedding is closest to the output vector in terms of Euclidean distance.
-
-4. The main part of the code creates word representations for a list of sentences, then for each sentence, it predicts the next word given the current word "fox" and prints the attention weights for each word in the sentence and the predicted next word.
-
-Please keep in mind that this is a simplified implementation of self-attention. 
+3. `predict_next_word_with_self_attention(current_word, words, word_embeddings, word_to_index, index_to_word)`: This function predicts the next word given the current word and a list of words (context). It first retrieves the embeddings of the current word and the context words, then calculates the self-attention weights and output vector. The predicted next word is the word whose embedding is closest to the output vector.
 
 ## Running the Model
 
