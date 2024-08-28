@@ -1,6 +1,6 @@
 ### **A Recurrent Neural Network (RNN) with Self-Attention**
 
-The model presented in this repository is a **Recurrent Neural Network (RNN)** with a **self-attention mechanism**. RNNs are particularly well-suited for sequential data like text, as they can capture dependencies between elements in the sequence.
+The model presented in this repository is a **Recurrent Neural Network (RNN)** with a **self-attention mechanism**. RNNs are particularly well-suited for sequential data like text, as they can capture dependencies between elements in the sequence. While our model demonstrates the basic concept of self-attention, it's a simplified version of an RNN. 
 
 * **RNNs:** These networks process input sequences one element at a time, maintaining a hidden state that stores information about the sequence seen so far. This allows them to handle long-range dependencies in the data.
 * **Self-Attention:** The self-attention mechanism allows the model to focus on different parts of the input sequence based on their relevance to the current output. This is achieved by assigning weights to each input element, with larger weights indicating greater importance.
@@ -11,20 +11,6 @@ By combining RNNs with self-attention, the model can effectively process sequent
 
 1. **Multi-Layer Architecture:** True RNNs often have multiple layers, allowing them to capture more complex patterns and relationships in the data. Our model, however, is a single-layer model.
 2. **Recurrent Connections:** RNNs typically have recurrent connections between hidden states, allowing information to flow from previous time steps to subsequent ones. Our model, while using the concept of attention, doesn't explicitly have recurrent connections in the traditional sense.
-
-While our model demonstrates the basic concept of self-attention, it's a simplified version of an RNN. 
-
-True RNNs typically have a multi-layer architecture, recurrent connections, and often incorporate attention mechanisms to improve their performance.
-
-## A Recurrent Neural Network (RNN) with Self-Attention and Transformer-Inspired Techniques
-
-The model presented in this repository is a **Recurrent Neural Network (RNN)** augmented with a **self-attention mechanism**. This combination leverages the strengths of both RNNs and Transformers to create a powerful model for sequential data.
-
-### RNNs: Capturing Sequential Dependencies
-RNNs are designed to process input sequences one element at a time, maintaining a hidden state that stores information about the sequence seen so far. This allows them to capture long-range dependencies in the data, making them well-suited for tasks like language modeling and speech recognition.
-
-### Self-Attention: Focusing on Relevant Information
-The self-attention mechanism enables the model to focus on different parts of the input sequence based on their relevance to the current output. This is achieved by assigning weights to each input element, with larger weights indicating greater importance. By incorporating self-attention, the model can learn to attend to relevant information in the sequence, even if it is located far away from the current position.
 
 ![](https://www.mdpi.com/applsci/applsci-12-03846/article_deploy/html/images/applsci-12-03846-g006-550.jpg)
 
