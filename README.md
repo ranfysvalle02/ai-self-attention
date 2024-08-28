@@ -24,12 +24,22 @@ The model presented in this repository is a type of **language model** that pred
 ![](https://www.mdpi.com/applsci/applsci-12-03846/article_deploy/html/images/applsci-12-03846-g006-550.jpg)
 
 _(Image Credit to article[ Attention Map-Guided Visual Explanations for Deep Neural Networks ](https://www.mdpi.com/2076-3417/12/8/3846) )_
+
 # **We should pay more attention to attention**
+
 **The Illusion of "Intelligence"**
 
 The term "intelligence" is often used to describe the capabilities of mathematical models like LLMs. However, it's important to note that this "intelligence" is heavily dependent on the quality and diversity of the training data. The model's "intelligence" can be biased, limited, and even misleading. For instance, an LLM trained on mostly news articles might struggle to understand sarcasm or humor. 
 
 It all started with: ["Attention is all you need."](https://arxiv.org/abs/1706.03762)
+
+![](https://miro.medium.com/v2/resize:fit:1400/format:webp/1*bWhofmIsEaplOkav6FjqpA.png)
+
+In the above image/example, there are 7 sequences in the sentence ‘the train left the station on time’, and we can see a 7x7 attention score matrix.
+
+According to the self-attention scores depicted in the picture, the word ‘train’ pays more attention to the word ‘station’ rather than other words in consideration, such as ‘on’ or ‘the’. Alternatively, we can say the word ‘station’ pays more attention to the word ‘train’ rather than other words in consideration, such as ‘on’ or ‘the’.
+
+[Read more here: Self-Attention](https://medium.com/@ramendrakumar/self-attention-d8196b9e9143)
 
 Imagine you're reading a long novel. You don't read every word with the same level of focus. Instead, you pay more attention to certain parts, like the plot twists or character developments. This is similar to how attention works in a language model.
 
