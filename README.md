@@ -42,10 +42,6 @@ According to the self-attention scores depicted in the picture, the word ‘trai
 
 Attention is a mechanism that allows a language model to focus on different parts of its input sequence based on their relevance to the current output. This is achieved by assigning weights to each input element, with larger weights indicating greater importance. These weights are calculated using a similarity metric, such as the dot product, between the query vector and each key vector in the input sequence.
 
-![self-attention](https://miro.medium.com/v2/resize:fit:716/1*piCQbDMPO1-Kw5ZiNAl-FA.png)
-
-_(Image credit to article: [Self-Attention](https://medium.com/@saba99/self-attention-0b21baad0a48) )_
-
 For instance, in translation, attention helps the model concentrate on words or phrases that are semantically connected, leading to more accurate translations. On the other hand, this same mechanism can be exploited to generate misleading or biased text by directing the model's focus towards specific information.
 
 **Attention and Quality:**
