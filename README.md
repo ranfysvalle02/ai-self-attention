@@ -100,7 +100,7 @@ The model then uses these probabilities to weigh the influence of each word's em
 
 * **Word Embeddings**: The model uses randomly generated embeddings to represent each word. These embeddings are then projected into query, key, and value vectors which are used for calculating the attention weights.
 
-**Overall, the model can be considered a simple recurrent neural network (RNN) with a self-attention mechanism for next word prediction.** It demonstrates the core idea of self-attention but lacks the complexity of more advanced models like Transformers, which utilize this mechanism extensively.
+**Overall, the model can be considered a simple language model with a self-attention mechanism for next word prediction.** It demonstrates the core idea of self-attention but lacks the complexity of more advanced models like Transformers, which utilize this mechanism extensively.
 
 ```python
 import numpy as np
