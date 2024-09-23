@@ -414,3 +414,9 @@ print(f"Prediction process: The model uses the context of the given word '{curre
 print(f"Attention Impact: The attention probabilities show the relevance of each word in the context for the prediction. The higher the probability, the more impact the word has on the prediction.\n")
 ```
 
+## Resources
+
+https://eugeneyan.com/writing/attention/
+
+
+
