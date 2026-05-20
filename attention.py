@@ -1,90 +1,111 @@
 import numpy as np
 
-def softmax(x):
-  """
-  This softmax function is often used in machine learning and deep learning to convert 
-  a vector of real numbers into a probability distribution. 
-  Each output value is between 0 and 1 (inclusive), and the sum of all output values is 1. 
-  """
-  # Subtract the max value in the input array from all elements for numerical stability.
-  # This ensures that all values in the array are between 0 and 1, which helps prevent potential overflow or underflow issues.
-  x -= np.max(x)
+def softmax(x, axis=-1):
+    """
+    Computes the softmax function along a specified axis, with numerical stability.
+    """
+    # Subtract max for numerical stability (prevents overflow)
+    # keepdims=True ensures the broadcast aligns correctly across the matrix
+    x_max = np.max(x, axis=axis, keepdims=True)
+    exp_x = np.exp(x - x_max)
+    
+    # Normalize so all probabilities sum to 1 along the specified axis
+    return exp_x / np.sum(exp_x, axis=axis, keepdims=True)
 
-  # Apply the exponential function to each element in the array.
-  # This transforms each value in the array into a positive value.
-  exp_x = np.exp(x)
+def create_word_representations(sentence, d_model=4):
+    """
+    Creates a simple vocabulary and random embeddings for a given sentence.
+    d_model is the dimensionality of our word embeddings.
+    """
+    words = sentence.split()
+    unique_words = list(dict.fromkeys(words)) # Preserve order, remove duplicates
+    
+    word_to_index = {word: i for i, word in enumerate(unique_words)}
+    index_to_word = {i: word for word, i in word_to_index.items()}
+    
+    # Initialize random embeddings for our vocabulary
+    vocab_size = len(unique_words)
+    np.random.seed(42) # Seeded for reproducible output
+    embeddings = np.random.rand(vocab_size, d_model)
+    
+    # Map the specific sequence of words to their embeddings
+    sequence_embeddings = np.array([embeddings[word_to_index[w]] for w in words])
+    
+    return sequence_embeddings, words
 
-  # Divide each element in the array by the sum of all elements in the array.
-  # This normalizes the values so that they all add up to 1, which is a requirement for a probability distribution.
-  softmax_x = exp_x / np.sum(exp_x)
-
-  # Return the resulting array, which represents a probability distribution over the input array.
-  return softmax_x
-
-def create_word_representations(sentences):
-    word_to_index = {}
-    index_to_word = {}
-    word_embeddings = []
-
-    for sentence in sentences:
-        for word in sentence.split():
-            if word not in word_to_index:
-                word_to_index[word] = len(word_to_index)
-                index_to_word[len(index_to_word)] = word
-                word_embeddings.append(np.random.rand(3))  # Random embeddings
-
-    return np.array(word_embeddings), word_to_index, index_to_word
-
-def calculate_self_attention(query, keys, values):
-    scores = np.dot(query, keys.T) / np.sqrt(keys.shape[1])
-    attention_weights = np.empty_like(scores)
-    for i in range(len(scores)):
-        if len(keys[i].shape) == 1:  # Check if 1D array
-            attention_weights[i] = np.exp(scores[i])  # No need to sum for unique words
-        else:
-            attention_weights[i] = np.exp(scores[i]) / np.sum(np.exp(scores[i]), axis=1, keepdims=True)
-
-    return attention_weights
-
-def predict_next_word_with_self_attention(current_word, context_window, words, word_embeddings, word_to_index, index_to_word):
-    context_embeddings = word_embeddings[[word_to_index[word] for word in context_window]]
-    query = np.mean(context_embeddings, axis=0)  # Average context embeddings
-    keys = values = np.array([word_embeddings[word_to_index[word]] for word in words])
-    attention_weights = calculate_self_attention(query, keys, values)
-    attention_probabilities = softmax(attention_weights)
-    predicted_index = np.argmax(attention_probabilities)  # Select the word with the highest probability
-    predicted_word = index_to_word[predicted_index]
-    return predicted_word, attention_probabilities
+def scaled_dot_product_attention(Q, K, V):
+    """
+    Calculates the true self-attention mechanism: Attention(Q, K, V) = softmax(QK^T / sqrt(d_k))V
+    """
+    # d_k is the dimension of the keys
+    d_k = K.shape[-1]
+    
+    # 1. Calculate the dot product between Queries and Keys (the "scores")
+    # Q is (N x d_k), K.T is (d_k x N) -> scores is (N x N)
+    scores = np.dot(Q, K.T)
+    
+    # 2. Scale the scores by the square root of d_k
+    scaled_scores = scores / np.sqrt(d_k)
+    
+    # 3. Apply softmax to get attention weights (probabilities)
+    attention_weights = softmax(scaled_scores, axis=-1)
+    
+    # 4. Multiply the attention weights by the Values matrix
+    # weights is (N x N), V is (N x d_v) -> context_aware_embeddings is (N x d_v)
+    context_aware_embeddings = np.dot(attention_weights, V)
+    
+    return context_aware_embeddings, attention_weights
 
 if __name__ == "__main__":
-    sentences = [
-        "The quick brown fox jumps over the lazy dog",
-    ]
-
-    word_embeddings, word_to_index, index_to_word = create_word_representations(sentences)
-    current_word = "jumps"
-    context_window_size = 2  # Considering two words before the current word
-
-    for sentence in sentences:
-        words = sentence.split()
-        current_word_index = words.index(current_word)
-        context_window = words[max(0, current_word_index - context_window_size):current_word_index]
-        predicted_word, attention_probabilities = predict_next_word_with_self_attention(current_word, context_window, words, word_embeddings, word_to_index, index_to_word)
-        print(f"\nGiven the word: {current_word}")
-print(f"Context: {' '.join(context_window)}")  # Print context window
-print(f"Sentence: {sentence}")
-print("Attention Probabilities:")
-for word, prob in zip(words, attention_probabilities):
-    print(f"\t{word}: {prob:.4f}")
-print(f"Predicted next word: {predicted_word}\n")
-print("""
-The word embeddings are initialized randomly in this code. 
-This means that the relationships between different words are not captured in the embeddings, 
-which could lead to seemingly random attention probabilities.
-""")
-print("""
-The input triggers the attention mechanism which is used to weight 
-the importance of different words in the sentence for the prediction of the next word.
-""")
-print(f"Prediction process: The model uses the context of the given word '{current_word}' to predict the next word. The attention mechanism assigns different weights to the words in the context based on their relevance. The word with the highest weight is considered as the most relevant word for the prediction.")
-print(f"Attention Impact: The attention probabilities show the relevance of each word in the context for the prediction. The higher the probability, the more impact the word has on the prediction.\n")
+    sentence = "the cat sat on the mat"
+    d_model = 4 # Dimension of our input embeddings
+    d_k = 3     # Dimension of our Query/Key/Value vectors
+    
+    print(f"--- 1. INPUT PROCESSING ---")
+    print(f"Sentence: '{sentence}'")
+    
+    # Get the raw embeddings for the N words in our sequence
+    # X shape: (N, d_model) where N=6, d_model=4
+    X, words = create_word_representations(sentence, d_model=d_model)
+    N = len(words)
+    print(f"Sequence length (N): {N} tokens")
+    print(f"Input Embeddings (X) shape: {X.shape}\n")
+    
+    print(f"--- 2. LINEAR PROJECTIONS ---")
+    # In a real neural network, these W matrices are the weights the model LEARNS.
+    # We initialize them randomly here.
+    np.random.seed(42)
+    W_Q = np.random.rand(d_model, d_k)
+    W_K = np.random.rand(d_model, d_k)
+    W_V = np.random.rand(d_model, d_k)
+    
+    # Project input embeddings into Query, Key, and Value spaces
+    Q = np.dot(X, W_Q)
+    K = np.dot(X, W_K)
+    V = np.dot(X, W_V)
+    
+    print(f"Queries (Q) shape: {Q.shape}")
+    print(f"Keys (K) shape:    {K.shape}")
+    print(f"Values (V) shape:  {V.shape}\n")
+    
+    print(f"--- 3. CALCULATING SELF-ATTENTION ---")
+    context_aware_embeddings, attention_weights = scaled_dot_product_attention(Q, K, V)
+    
+    print("Attention Weights (N x N matrix):")
+    print("How much each word attends to every other word (Rows sum to 1.0)")
+    
+    # Print a formatted table of attention weights
+    print(f"{'':>6} " + " ".join([f"{w:>6}" for w in words]))
+    for i, row_word in enumerate(words):
+        row_str = " ".join([f"{val:6.3f}" for val in attention_weights[i]])
+        print(f"{row_word:>6} {row_str}")
+        
+    print(f"\n--- 4. FINAL OUTPUT ---")
+    print(f"Context-Aware Embeddings shape: {context_aware_embeddings.shape}")
+    print("Notice how each token's original vector has been replaced by a new vector")
+    print("that is a weighted sum of ALL the Values in the sequence.")
+    
+    # Show the final vector for the word "cat"
+    cat_index = words.index("cat")
+    print(f"\nOriginal embedding for 'cat': {X[cat_index].round(3)}")
+    print(f"New context-aware embedding for 'cat': {context_aware_embeddings[cat_index].round(3)}")
