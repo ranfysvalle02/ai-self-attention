@@ -6,11 +6,13 @@ This is a companion to [`blog.md`](./blog.md), which walks through the mechanica
 
 A warning before the playbook: the mechanism is the mechanism. The dosing — *exactly how much content do I need, in exactly which contexts, before a frontier model starts surfacing me?* — is genuinely unsettled. Anyone who claims to know the precise threshold is either selling you something or running an experiment that hasn't been published. Treat what follows as physics, not as a recipe. The directions are right. The constants are unknown.
 
-If you skipped the mechanics post, here is the one sentence you need to have in mind:
+If you skipped the mechanics post, here are the two sentences you need to have in mind:
 
 > **The model isn't recommending. It's sampling. What you call its opinion is the shape of its training distribution, sharpened by softmax, leashed by fine-tuning, and tilted at the last second by the prompt the user sent in.**
 
-There are six levers. They map one-to-one onto the stages of the pipeline.
+> **And the question the model is actually answering is not the one the user typed — it's the one re-shaped by every key and value sitting in its attention window. Self-attention, in-context learning, and RAG are the same mechanism. Whoever controls the keys and values controls the question.**
+
+There are six levers. The first five map onto the *training* pipeline. The sixth — the cheapest, fastest-moving, and most contested in 2026 — is about controlling the keys and values that enter the attention window at inference time.
 
 ---
 
@@ -101,16 +103,57 @@ This is also where the effect is hardest to measure. You will not see *"annotato
 
 ---
 
-## Lever 6 — Make Yourself Easy to Pull Into the Prompt
+## Lever 6 — Be in the Attention Window: System Prompts, RAG, Few-Shots, Tools
 
-You cannot tune the customer's system prompt. But you can make sure your product is the obvious thing for a developer to mention when *they* are constructing one.
+Levers 1–5 are about getting into the *training* distribution. Lever 6 is the one nobody had to think about until 2023: getting into the *inference-time* distribution. It is also where the connection to the mechanics post matters most.
 
-- **First-class docs** with copy-pasteable system-prompt snippets for common use cases.
+Stage 2 of [`blog.md`](./blog.md) makes the case that **self-attention, in-context learning, and retrieval-augmented generation are the same mechanism** at progressively larger scopes. All three answer the question: *which keys and values does the answer-position query get to dot-product against?* If you can become an eligible key/value at inference time — without ever touching a frontier model's weights — you are doing roughly the same job as a fine-tuning run, only cheaper, faster, and per-query.
+
+There are four flavors of this lever. They are all the same operation under the hood. They differ only in *who* gets to decide which keys are eligible.
+
+### 6a. Be in the System Prompt
+
+You cannot directly edit the customer's system prompt. But you can make sure your product is the obvious thing for a developer to drop into one.
+
+- **Copy-pasteable system-prompt snippets** in your docs, scoped to common use cases.
 - **Official SDKs and integrations** that show up in the natural completion of `pip install`, `npm i`, `brew install`.
-- **Partnership announcements** with the platforms developers use to build on top of LLMs (LangChain, LlamaIndex, the frontier model providers' tool-use registries).
-- **Reference implementations** in the major frameworks. If `pip install your-thing` is one of the first three things a tutorial recommends, every conversation that tutorial spawns will mention you in the context window.
+- **Partnership announcements** with the frameworks devs use to build on top of LLMs (LangChain, LlamaIndex, frontier-provider tool-use registries).
+- **Reference implementations** in the major frameworks. If `pip install your-thing` is one of the first three things a tutorial recommends, every conversation that tutorial spawns will mention you inside the context window.
 
-Once your name is in the context, the rest of the bias stack — attention, embedding geometry, softmax — does the work for you.
+### 6b. Be in the RAG Index
+
+This is the new battleground. Every assistant with web search, every "Chat With Docs" tool, every agent framework with a vector store is a system that decides — at query time — which documents become keys in the next attention computation. If your content is in those indexes, your tokens are eligible to be attended over. If it isn't, you are invisible to that entire category of queries — even when your training-distribution presence is strong.
+
+The targets:
+
+- **Web-search-backed assistants** (ChatGPT search, Perplexity, Claude with web tools, Gemini, Phind, Cursor's web search). These re-query the live web on most prompts. SEO is back, but the audience is the retriever, not the user. The retriever is embedding the query and doing top-`k` against a freshly-crawled index. Your job is to be in that top-`k`.
+- **Curated docs corpora.** Some assistants prefer canonical sources — your docs site, GitHub README, Wikipedia. Make those clean, dense, and current. Stale docs are stale `K` vectors.
+- **Built-in framework knowledge cutoffs.** Many assistants ship with a curated snapshot of documentation that is refreshed on a cadence. Being included when those snapshots refresh is worth significant volume for the entire window the snapshot is live.
+- **Vector DBs your customers own.** When developers build their own RAG pipelines on top of your product, the chunks they index *of your docs* become keys for every downstream prompt. Make your docs chunkable: short sections, clear headers, copyable code blocks. Long monolithic pages get embedded as one fuzzy vector that matches nothing well.
+
+The optimization target is simple: when a retriever embeds a typical user query in your domain, your content should be in the top-`k`. That is RAG-SEO. The mechanics are identical to attention itself: similarity in embedding space, ranked, top-`k` taken.
+
+### 6c. Be the Canonical Few-Shot Example
+
+Every tutorial, blog post, and Stack Overflow answer that gets quoted into someone's prompt is a few-shot example you didn't write — but if it uses your product, it works for you for free. Being the canonical answer to a popular question (the one ChatGPT cites, the one Perplexity surfaces, the one developers paste verbatim) means your name lands inside the context window of countless downstream prompts.
+
+This blurs into Lever 5 (be where the annotators are), but the mechanism is different. Annotators shape the *base* model once per training cycle. Canonical answers shape *every prompt that quotes them*, in real time, forever, without retraining.
+
+### 6d. Be in the Tool Catalog
+
+Agent loops increasingly look like this: *given the user goal, browse a list of available tools, pick the right one, call it.* That list of tools is concatenated into the context window. The descriptions are keys. The tool that *gets called* is the tool whose description had the highest dot product with the agent's query.
+
+- **MCP servers and tool registries.** Get listed. The descriptions are SEO copy for an audience of one — the agent — and they read every word.
+- **Function-calling schemas in your SDK.** A clear, well-named, well-described function shows up better in the agent's attention than a clever-but-cryptic one. Name your tools after the verbs users say, not the architectural concepts your team uses.
+- **Multi-tool registries** (frontier providers' tool catalogs, agent-platform marketplaces). Inclusion in these is roughly the inference-time equivalent of inclusion in `pip install`'s most-recommended package list.
+
+### Why Lever 6 Is Asymmetric
+
+Lever 6 is the cheapest lever and the most volatile. You can reshape your RAG presence in a quarter. You cannot reshape a frontier model's pretraining distribution at all. But Lever 6 is also the easiest to lose — a docs migration that breaks the canonical URL, a tokenizer change that re-splits your chunks, a competitor shipping a better tool description — any of these can quietly evict you from the attention window without warning.
+
+The dark mirror of this lever is **prompt injection**: someone *else* shaping the question with keys you didn't author. Every system that sources keys/values from untrusted input (RAG over arbitrary URLs, tool outputs from third parties, conversation context that includes user-uploaded files) is a system where adversaries can inject keys into the model's attention. The same mechanism that makes Lever 6 work for you is what makes prompt injection work against everyone. You do not get one without the other.
+
+> **Once your name is in the context, the rest of the bias stack — attention, embedding geometry, softmax — does the work for you.** The trick is staying in.
 
 ---
 
@@ -143,13 +186,15 @@ The model is just listening. Give it something to hear.
 
 ## How to Measure Whether It's Working
 
-If you don't measure, you can't tune. Three lightweight probes you can run quarterly against the frontier models, all derived from the same techniques in [`blog.md`](./blog.md):
+If you don't measure, you can't tune. Four lightweight probes you can run quarterly against the frontier models, all derived from the same techniques in [`blog.md`](./blog.md). The first three measure your *training-distribution* presence; the fourth measures your *attention-window* presence — they move on different timescales and respond to different levers.
 
 1. **Logit-difference tracking.** For a fixed set of canonical prompts (`best database for...`, `which queue should I use...`, etc.), record the top-20 logprobs across the major models. The gap between you and the leader, exponentiated, is your bias multiplier. Tracking this over time tells you whether the levers above are moving the needle.
 
 2. **Temperature-sweep mention rate.** Same canonical prompts, sample 100 completions at `T=1.0` and `T=1.5`. Count how often your product appears in the response. The mention rate at high temperature is the *floor* of your presence in the model's prior. Watch it rise (or stagnate) over training cycles.
 
 3. **Tokenization audit.** Run your name and your top three competitors through every major tokenizer (`tiktoken` for OpenAI, the `transformers` tokenizer hub for everyone else). Track changes — frontier model providers occasionally update their tokenizers, and a tokenizer change can quietly shift the playing field.
+
+4. **RAG-citation tracking.** For the same canonical prompts, run them through the major web-search-enabled assistants (ChatGPT search, Perplexity, Claude with web, Gemini, Cursor). Record which URLs appear in the citation list, and whether your domain shows up. Your appearance rate in citations is your *retriever* presence — distinct from your training-data presence and movable on a quarterly cadence. Track it separately. It is the metric that responds fastest to Lever 6 work, and it decouples cleanly from probes 1–3, which only measure the base model.
 
 None of this requires training a model or reading a paper. It takes a small script and twenty minutes a quarter. The bias goes from *vibes* to *I have a dashboard.*
 

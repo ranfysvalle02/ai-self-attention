@@ -81,6 +81,61 @@ Attention weights (each row sums to 1.0):
 
 Attention is the lens. Training ground it.
 
+### The Same Operation at Every Scale: Self-Attention, In-Context Learning, RAG
+
+Look at what `Q · K^T` actually *is*: a similarity search. The query vector dot-products against every key vector and finds the ones it lines up with. Softmax turns those into weights. A weighted sum of values produces "the input, biased toward whatever this query was asking about."
+
+That is not a transformer-specific trick. That is the entire family of context-injection techniques in modern LLMs, sitting on top of one another like Russian dolls. Self-attention, in-context learning (few-shot prompting), and retrieval-augmented generation (RAG) are not three different mechanisms. **They are the same mechanism, with progressively larger choices of `K` and `V`.**
+
+| Mechanism | Where `K`, `V` live | What ends up shaping the question |
+|---|---|---|
+| **Self-attention** | The current prompt | Other tokens already in this input |
+| **In-context learning** | The current prompt + few-shot examples | The examples you assembled |
+| **RAG** | An external vector database | Whatever your retriever returned |
+| **Conversation history** | Earlier turns concatenated into context | Whatever was said before |
+| **System prompts** | A privileged region of the prompt | The persona/instructions you injected |
+
+All five are the same four-step recipe:
+
+1. Project the current position into a **query**.
+2. Compute similarity against a set of **keys**.
+3. Softmax similarities into **weights**.
+4. Weighted-sum the corresponding **values** back into the context vector.
+
+The only thing that changes is *whose keys and values are eligible*.
+
+#### In-context learning is attention on your few-shot examples
+
+When you paste five worked examples before your real question, the model's weights do not update. *Nothing inside the network changes.* What changes is the **set of keys and values the answer position is allowed to attend to.** The few-shot examples become high-similarity neighbors of the query in attention space. The context vector at the answer position becomes a weighted blend of those examples. The "lesson" the model appears to have learned is just the geometry of the prompt you assembled.
+
+This is also why few-shot examples that *feel* relevant to a human sometimes do nothing. If their tokens don't dot-product strongly against the answer-position query, attention skips them. The model isn't ignoring you. Its query simply isn't matching your keys.
+
+#### RAG is attention with the `K` matrix swapped out
+
+Retrieval-augmented generation is what you get when you take Step 2 — "compute similarity against a set of keys" — and run it *outside* the model on a keystore too big to ever fit in the attention window. The vector database stores pre-computed embeddings of document chunks. `top-k` retrieval is just **hard-attention**: instead of softmax-weighting every chunk continuously, you keep the `k` highest-similarity ones and discard the rest by setting their weights to zero.
+
+Once those `k` chunks are concatenated into the prompt, **regular self-attention takes over.** The answer-position query dot-products against the retrieved chunks the same way it dot-products against any other context. RAG is not a parallel pathway bolted onto the transformer. It is a feeder system that decides which keys and values get the privilege of being inside the attention window in the first place.
+
+> **RAG is attention. The vector database is just a `K` matrix too big to keep on the GPU.**
+
+#### So who actually asked the question?
+
+By the time the LM head fires, the model is responding to a query vector that has been re-shaped by:
+
+- the rest of the prompt (self-attention),
+- the few-shot examples (in-context learning),
+- the retrieved documents (RAG),
+- the conversation history (multi-turn attention),
+- and the system prompt (privileged context).
+
+The string the user typed is *one input* into that re-shaping. It is not the question the model answers. It is the question the model *starts from*, before five layers of attention finish editing it.
+
+> Self-attention shapes the question with the prompt. In-context learning shapes it with examples. RAG shapes it with documents. They are the same operation, scaled outward.
+
+**Every system that "adds context" to an LLM is mechanically an attention mechanism whose `K` and `V` matrices it gets to author.** That is enormous leverage — and it is why prompt engineering works, why prompt injection works, why a stale RAG index silently lobotomizes a deployed assistant, and why a single well-placed few-shot example can flip a model's answer for an entire class of queries.
+
+You don't need new architecture to steer an LLM. You just need to control its keys and values.
+
 ---
 
 ## Stage 3 — Feed-Forward + Activation: The Nonlinear Amplifier
@@ -357,11 +412,13 @@ A system prompt is just more tokens in the context. But its position is privileg
 
 The empirical effect is enormous. The same base model with *`You are a database architect`* vs. *`You are a startup CTO who values simplicity`* will produce systematically different recommendation distributions for the same user question. Same weights. Different attention. Different output.
 
-### Few-Shot Priming and Conversation Context
+### Few-Shot Priming, RAG, and Conversation Context
 
 Everything earlier in the conversation is part of the input. If turn 1 mentions Kubernetes, the attention mechanism at turn 4 will weight tokens that co-occurred with Kubernetes in training — including whatever databases the training corpus paired with Kubernetes. A conversation that already named one technology biases recommendations for adjacent ones, because the embeddings of mentioned tokens get pulled into every subsequent context vector.
 
-This is why *asking the same question fresh* and *asking it after a long conversation* can yield meaningfully different answers from the same model. The model isn't being inconsistent. It's being a prediction engine.
+This is the Stage 2 punchline coming back at inference time. Few-shot examples, prior turns, and RAG-retrieved documents are all the *same* attention-keystore swap: they change which keys and values the answer-position query gets to dot-product against. A RAG retriever that pulls Postgres docs into context is, mechanically, indistinguishable from a user who pasted those same docs as a few-shot example — both end up as keys in the same attention computation. The only difference is who chose them.
+
+This is why *asking the same question fresh* and *asking it after a long conversation* (or with a different RAG index, or with different few-shots) can yield meaningfully different answers from the same model. The weights are identical. The keys are not.
 
 ### Decoding Strategies
 

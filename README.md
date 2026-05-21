@@ -75,6 +75,8 @@ Attention weights (each row sums to 1.0):
 
 Notice: "cat" attends most strongly to "sat" (0.367). "mat" attends most strongly to "cat" (0.294). These asymmetric relationships are what allow the model to understand structure.
 
+> **The same operation powers RAG and in-context learning.** `Q · K^T` is a similarity search. When the keys are the prompt's own tokens, you get self-attention. When the keys are few-shot examples you pasted, you get in-context learning. When the keys are pre-computed embeddings of documents in a vector database, you get retrieval-augmented generation. The math is identical — only *whose* keys and values are eligible changes. A vector DB is just a `K` matrix too big to keep on the GPU. Full breakdown in [`blog.md`](./blog.md) Stage 2.
+
 ### 3. Feed-Forward Network with GeLU Activation
 
 After attention, each position passes through a feed-forward network with a nonlinear activation function:
